@@ -1,0 +1,43 @@
+package com.text;
+
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        int total = 0;
+        Scanner in = new Scanner(System.in);
+
+        ArrayList<Question> questions = new ArrayList<Question>();
+
+        questions.add(new Question(1, "В каком случае водитель совершит вынужденную остановку?",
+                new String[]{
+                        "Остановившись непосредственно перед пешеходным переходом, чтобы уступить дорогу пешеходу.",
+                        "Остановившись на проезжей части из-за технической неисправности транспортного средства.",
+                        "В обоих перечисленных случаях."},
+                2));
+        questions.add(new Question(2, "Что означает мигание зеленого сигнала светофора?",
+                new String[]{
+                        "Предупреждает о неисправности светофора.",
+                        "Разрешает движение и информирует о том, что вскоре будет включен запрещающий сигнал",
+                        "Запрещает дальнейшее движение."},
+                2));
+
+        for (Question question : questions) {
+            question.printQuestion();
+
+            System.out.print("Введи правильный ответ -> ");
+            int user_answer = in.nextInt();
+
+            if (user_answer == question.getCurrentAnswerId()) {
+                total++;
+                System.out.println("Верно!");
+            } else {
+                System.out.println("Не верно!");
+            }
+        }
+        System.out.println("Тестирование закончено с результатом: " + total + " правильных ответов");
+        System.out.println("Общий процент верных ответов: " + ((float)total / questions.size()) * 100);
+    }
+
+}
