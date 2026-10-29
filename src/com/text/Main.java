@@ -41,33 +41,54 @@ public class Main {
         for (Question question : questions) {
             question.printQuestion();
 
-            System.out.print("Введите один или более ответ(ов): ");
-            String[] user_answers = in.nextLine().split(" ");
+            while (true) {
+                System.out.print("Введите один или более ответ(ов): ");
+                String input = in.nextLine().trim();
 
-
-            int[] user_answers_int = new int[user_answers.length];
-            for (int i = 0; i < user_answers.length; i++) {
-                while (true) {
-                    try {
-                        user_answers_int[i] = Integer.parseInt(user_answers[i]);
-                        break;
-                    } catch (NumberFormatException e) {
-                        System.out.println("Ошибка: введен неверный формат данных");
-                        user_answers = in.nextLine().split(" ");
-                    }
+                if (input.isEmpty()) {
+                    System.out.println("Ошибка: введите хотя бы один ответ.");
+                    continue;
                 }
-            }
 
-            if (Arrays.equals(user_answers_int, question.getCorrectAnswerIds())) {
-                total++;
-                System.out.println("Верно!");
-            } else {
-                System.out.println("Не верно!");
-                System.out.println("Правильный ответ: " + Arrays.toString(question.getCorrectAnswerIds()));
+                String[] userAnswers = input.split("\\s+");
+
+                try {
+                    int[] userAnswersInt = new int[userAnswers.length];
+                    for (int i = 0; i < userAnswers.length; i++) {
+                        if (!isExists(Integer.parseInt(userAnswers[i]), userAnswersInt, i) && Integer.parseInt(userAnswers[i]) >= 1 && Integer.parseInt(userAnswers[i]) <= question.getAnswerLength())
+                            userAnswersInt[i] = Integer.parseInt(userAnswers[i]);
+                        else
+                            throw new NumberFormatException("Ошибка: присутствует дубликат");
+                    }
+
+                    Arrays.sort(userAnswersInt);
+                    Arrays.sort(question.getCorrectAnswerIds());
+
+                    if (Arrays.equals(userAnswersInt, question.getCorrectAnswerIds())) {
+                        total++;
+                        System.out.println("Верно!");
+                    } else {
+                        System.out.println("Не верно!");
+                        System.out.println("Правильный ответ: " + Arrays.toString(question.getCorrectAnswerIds()));
+                    }
+                    break;
+
+                } catch (NumberFormatException e) {
+                    System.out.println("Ошибка: вводите только целые числа.");
+                }
             }
         }
         System.out.printf("Тестирование закончено с результатом: %d/%d правильных ответов\n", total, questions.size());
         System.out.printf("Общий процент верных ответов: %.2f", ((float)total / questions.size()) * 100);
+    }
+
+    public static boolean isExists(int value, int[] array, int length) {
+        for (int i = 0; i < length; i++) {
+            if (array[i] == value) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

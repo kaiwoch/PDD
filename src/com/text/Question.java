@@ -1,7 +1,7 @@
 package com.text;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Question {
     private final int questionId;
@@ -26,7 +26,7 @@ public class Question {
     public Question(int questionId, String questionText, String[] _answers, String[] description, int[] correctAnswerIds) {
         this.questionId = questionId;
         this.questionText = questionText;
-        this.correctAnswerIds = correctAnswerIds;
+        this.correctAnswerIds = Arrays.copyOf(correctAnswerIds, correctAnswerIds.length);
         answers = new ArrayList<Answer>();
 
         for (int i = 0; i < _answers.length; i++) {
@@ -47,7 +47,7 @@ public class Question {
     }
 
     public int[] getCorrectAnswerIds() {
-        return correctAnswerIds;
+        return Arrays.copyOf(correctAnswerIds, correctAnswerIds.length);
     }
 
     public int getAnswerLength() {
