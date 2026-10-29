@@ -41,42 +41,19 @@ public class Main {
         for (Question question : questions) {
             question.printQuestion();
 
-            while (true) {
-                System.out.print("Введите один или более ответ(ов): ");
-                String input = in.nextLine().trim();
+            int[] userAnswers = readAnswers(question, in);
 
-                if (input.isEmpty()) {
-                    System.out.println("Ошибка: введите хотя бы один ответ.");
-                    continue;
-                }
+            if (question.isCorrectAnswer(userAnswers)) {
+                total++;
+                System.out.println("Верно!");
+            } else {
+                System.out.println("Неверно!");
+                System.out.println("Правильный ответ: "
+                        + Arrays.toString(question.getCorrectAnswerIds()));
 
-                String[] userAnswers = input.split("\\s+");
-
-                try {
-                    int[] userAnswersInt = new int[userAnswers.length];
-                    for (int i = 0; i < userAnswers.length; i++) {
-                        if (!isExists(Integer.parseInt(userAnswers[i]), userAnswersInt, i) && Integer.parseInt(userAnswers[i]) >= 1 && Integer.parseInt(userAnswers[i]) <= question.getAnswerLength())
-                            userAnswersInt[i] = Integer.parseInt(userAnswers[i]);
-                        else
-                            throw new NumberFormatException("Ошибка: присутствует дубликат");
-                    }
-
-                    if (question.isCorrectAnswer(userAnswersInt)) {
-                        total++;
-                        System.out.println("Верно!");
-                    } else {
-                        System.out.println("Неверно!");
-                        System.out.println("Правильный ответ: "
-                                + Arrays.toString(question.getCorrectAnswerIds()));
-
-                        question.printCorrectAnswersDescriptions();
-                    }
-                    break;
-
-                } catch (NumberFormatException e) {
-                    System.out.println("Ошибка: вводите только целые числа.");
-                }
+                question.printCorrectAnswersDescriptions();
             }
+
         }
         System.out.printf("Тестирование закончено с результатом: %d/%d правильных ответов\n", total, questions.size());
         System.out.printf("Общий процент верных ответов: %.2f", ((float)total / questions.size()) * 100);
@@ -91,4 +68,31 @@ public class Main {
         return false;
     }
 
+    public static int[] readAnswers(Question question, Scanner in) {
+        while (true) {
+            System.out.print("Введите один или более ответ(ов): ");
+            String input = in.nextLine().trim();
+
+            if (input.isEmpty()) {
+                System.out.println("Ошибка: введите хотя бы один ответ.");
+                continue;
+            }
+
+            String[] userAnswers = input.split("\\s+");
+
+            try {
+                int[] userAnswersInt = new int[userAnswers.length];
+                for (int i = 0; i < userAnswers.length; i++) {
+                    if (!isExists(Integer.parseInt(userAnswers[i]), userAnswersInt, i) && Integer.parseInt(userAnswers[i]) >= 1 && Integer.parseInt(userAnswers[i]) <= question.getAnswerLength())
+                        userAnswersInt[i] = Integer.parseInt(userAnswers[i]);
+                    else
+                        throw new NumberFormatException("Ошибка: присутствует дубликат");
+                }
+                return userAnswersInt;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка: вводите только целые числа.");
+            }
+        }
+    }
 }
