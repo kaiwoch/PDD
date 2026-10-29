@@ -8,7 +8,7 @@ public class Question {
 
     private final ArrayList<Answer> answers;
 
-    private int currentAnswerId;
+    private int correctAnswerId;
 
     public static class Answer {
         private int answerId;
@@ -20,10 +20,10 @@ public class Question {
         }
     }
 
-    public Question(int questionId, String questionText, String[] arrayAnswers, int currentAnswerId) {
+    public Question(int questionId, String questionText, String[] arrayAnswers, int correctAnswerId) {
         this.questionId = questionId;
         this.questionText = questionText;
-        this.currentAnswerId = currentAnswerId;
+        this.correctAnswerId = correctAnswerId;
         answers = new ArrayList<Answer>();
 
         for (int i = 0; i < arrayAnswers.length; i++) {
@@ -43,7 +43,7 @@ public class Question {
         System.out.println("===========================================");
     }
 
-    public int getCurrentAnswerId() {
-        return currentAnswerId;
+    public int getCorrectAnswerId() {
+        return correctAnswerId;
     }
 }

@@ -29,7 +29,7 @@ public class Main {
             System.out.print("Введи правильный ответ -> ");
             int user_answer = in.nextInt();
 
-            if (user_answer == question.getCurrentAnswerId()) {
+            if (user_answer == question.getCorrectAnswerId()) {
                 total++;
                 System.out.println("Верно!");
             } else {
