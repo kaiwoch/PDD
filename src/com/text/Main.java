@@ -48,10 +48,11 @@ public class Main {
                 System.out.println("Верно!");
             } else {
                 System.out.println("Не верно!");
+                System.out.println("Правильный ответ: " + question.getCorrectAnswerId());
             }
         }
-        System.out.println("Тестирование закончено с результатом: " + total + " правильных ответов");
-        System.out.println("Общий процент верных ответов: " + ((float)total / questions.size()) * 100);
+        System.out.printf("Тестирование закончено с результатом: %d/%d правильных ответов\n", total, questions.size());
+        System.out.printf("Общий процент верных ответов: %.2f", ((float)total / questions.size()) * 100);
     }
 
 }
