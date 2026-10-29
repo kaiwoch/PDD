@@ -43,7 +43,7 @@ public class Main {
                 System.out.println("Правильный ответ: "
                         + Arrays.toString(question.getCorrectAnswerIds()));
 
-                question.printCorrectAnswersDescriptions();
+                question.printDescription();
             }
 
         }

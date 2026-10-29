@@ -74,16 +74,9 @@ public class Question {
         return Arrays.equals(correctAnswers, sortedUserAnswers);
     }
 
-    public void printCorrectAnswersDescriptions() {
-        for (int answerId : correctAnswerIds) {
-            Answer answer = getAnswer(answerId);
-
-            if (answer != null) {
-                System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
-                System.out.printf("Пояснение для правильного ответа: %d%n", answerId);
-                System.out.println(description);
-                System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
-            }
-        }
+    public void printDescription() {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println("Пояснение: " + description);
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
     }
 }
