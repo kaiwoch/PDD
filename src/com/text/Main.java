@@ -26,8 +26,22 @@ public class Main {
         for (Question question : questions) {
             question.printQuestion();
 
+            int user_answer = -1;
+
             System.out.print("Введи правильный ответ -> ");
-            int user_answer = in.nextInt();
+            while (in.hasNext()) {
+                if (in.hasNextInt()) {
+                    user_answer = in.nextInt();
+                    if (user_answer <= question.getAnswerLenght() && user_answer >= 1)
+                        break;
+                    else
+                        System.out.println("Ошибка: ответ вне допустимого диапазона!");
+                } else {
+                    System.out.println("Ошибка: неправильный ввод!");
+
+                    in.next();
+                }
+            }
 
             if (user_answer == question.getCorrectAnswerId()) {
                 total++;
