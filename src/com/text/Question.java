@@ -8,32 +8,28 @@ public class Question {
     private final String questionText;
     private final ArrayList<Answer> answers;
     private final int[] correctAnswerIds;
+    private final String description;
 
     public static class Answer {
         private final int answerId;
         private final String answerText;
-        private final String description;
 
-        public Answer(int answerId, String answerText, String description) {
+        public Answer(int answerId, String answerText) {
             this.answerId = answerId;
             this.answerText = answerText;
-            this.description = description;
-        }
-
-        public void printDescription() {
-            System.out.println(description);
         }
     }
 
     public Question(int questionId, String questionText, String[] _answers,
-                    String[] description, int[] correctAnswerIds) {
+                    String description, int[] correctAnswerIds) {
         this.questionId = questionId;
         this.questionText = questionText;
+        this.description = description;
         this.correctAnswerIds = Arrays.copyOf(correctAnswerIds, correctAnswerIds.length);
         answers = new ArrayList<Answer>();
 
         for (int i = 0; i < _answers.length; i++) {
-            answers.add(new Answer(i + 1, _answers[i], description[i]));
+            answers.add(new Answer(i + 1, _answers[i]));
         }
     }
 
@@ -85,7 +81,7 @@ public class Question {
             if (answer != null) {
                 System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
                 System.out.printf("Пояснение для правильного ответа: %d%n", answerId);
-                answer.printDescription();
+                System.out.println(description);
                 System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
             }
         }
