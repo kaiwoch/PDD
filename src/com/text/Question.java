@@ -3,16 +3,16 @@ package com.text;
 import java.util.ArrayList;
 
 public class Question {
-    private int questionId;
-    private String questionText;
+    private final int questionId;
+    private final String questionText;
 
     private final ArrayList<Answer> answers;
 
-    private int correctAnswerId;
+    private final int correctAnswerId;
 
     public static class Answer {
-        private int answerId;
-        private String answerText;
+        private final int answerId;
+        private final String answerText;
 
         public Answer(int answerId, String answerText) {
             this.answerId = answerId;
