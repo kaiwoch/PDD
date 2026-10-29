@@ -13,21 +13,23 @@ public class Question {
     public static class Answer {
         private final int answerId;
         private final String answerText;
+        private final String description;
 
-        public Answer(int answerId, String answerText) {
+        public Answer(int answerId, String answerText, String description) {
             this.answerId = answerId;
             this.answerText = answerText;
+            this.description = description;
         }
     }
 
-    public Question(int questionId, String questionText, String[] arrayAnswers, int correctAnswerId) {
+    public Question(int questionId, String questionText, String[] _answers, String[] description, int correctAnswerId) {
         this.questionId = questionId;
         this.questionText = questionText;
         this.correctAnswerId = correctAnswerId;
         answers = new ArrayList<Answer>();
 
-        for (int i = 0; i < arrayAnswers.length; i++) {
-            answers.add(new Answer(i + 1, arrayAnswers[i]));
+        for (int i = 0; i < _answers.length; i++) {
+            answers.add(new Answer(i + 1, _answers[i], description[i]));
         }
     }
 
