@@ -1,6 +1,7 @@
 package com.text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -20,7 +21,9 @@ public class Main {
                         "2",
                         "3"
                 },
-                2));
+                new int[]{
+                        2
+        }));
         questions.add(new Question(2, "Что означает мигание зеленого сигнала светофора?",
                 new String[]{
                         "Предупреждает о неисправности светофора.",
@@ -31,34 +34,36 @@ public class Main {
                         "2",
                         "3"
                 },
-                2));
+                new int[]{
+                    2
+        }));
 
         for (Question question : questions) {
             question.printQuestion();
 
-            int user_answer = -1;
+            System.out.print("Введите один или более ответ(ов): ");
+            String[] user_answers = in.nextLine().split(" ");
 
-            System.out.print("Введи правильный ответ -> ");
-            while (in.hasNext()) {
-                if (in.hasNextInt()) {
-                    user_answer = in.nextInt();
-                    if (user_answer <= question.getAnswerLength() && user_answer >= 1)
+
+            int[] user_answers_int = new int[user_answers.length];
+            for (int i = 0; i < user_answers.length; i++) {
+                while (true) {
+                    try {
+                        user_answers_int[i] = Integer.parseInt(user_answers[i]);
                         break;
-                    else
-                        System.out.println("Ошибка: ответ вне допустимого диапазона!");
-                } else {
-                    System.out.println("Ошибка: неправильный ввод!");
-
-                    in.next();
+                    } catch (NumberFormatException e) {
+                        System.out.println("Ошибка: введен неверный формат данных");
+                        user_answers = in.nextLine().split(" ");
+                    }
                 }
             }
 
-            if (user_answer == question.getCorrectAnswerId()) {
+            if (Arrays.equals(user_answers_int, question.getCorrectAnswerIds())) {
                 total++;
                 System.out.println("Верно!");
             } else {
                 System.out.println("Не верно!");
-                System.out.println("Правильный ответ: " + question.getCorrectAnswerId());
+                System.out.println("Правильный ответ: " + Arrays.toString(question.getCorrectAnswerIds()));
             }
         }
         System.out.printf("Тестирование закончено с результатом: %d/%d правильных ответов\n", total, questions.size());

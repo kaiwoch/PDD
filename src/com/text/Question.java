@@ -1,5 +1,6 @@
 package com.text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Question {
@@ -8,7 +9,7 @@ public class Question {
 
     private final ArrayList<Answer> answers;
 
-    private final int correctAnswerId;
+    private final int[] correctAnswerIds;
 
     public static class Answer {
         private final int answerId;
@@ -22,10 +23,10 @@ public class Question {
         }
     }
 
-    public Question(int questionId, String questionText, String[] _answers, String[] description, int correctAnswerId) {
+    public Question(int questionId, String questionText, String[] _answers, String[] description, int[] correctAnswerIds) {
         this.questionId = questionId;
         this.questionText = questionText;
-        this.correctAnswerId = correctAnswerId;
+        this.correctAnswerIds = correctAnswerIds;
         answers = new ArrayList<Answer>();
 
         for (int i = 0; i < _answers.length; i++) {
@@ -45,8 +46,8 @@ public class Question {
         System.out.println("===========================================");
     }
 
-    public int getCorrectAnswerId() {
-        return correctAnswerId;
+    public int[] getCorrectAnswerIds() {
+        return correctAnswerIds;
     }
 
     public int getAnswerLength() {
