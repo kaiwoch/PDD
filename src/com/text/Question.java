@@ -47,7 +47,7 @@ public class Question {
         return correctAnswerId;
     }
 
-    public int getAnswerLenght() {
+    public int getAnswerLength() {
         return answers.size();
     }
 }

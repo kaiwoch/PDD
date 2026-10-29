@@ -32,7 +32,7 @@ public class Main {
             while (in.hasNext()) {
                 if (in.hasNextInt()) {
                     user_answer = in.nextInt();
-                    if (user_answer <= question.getAnswerLenght() && user_answer >= 1)
+                    if (user_answer <= question.getAnswerLength() && user_answer >= 1)
                         break;
                     else
                         System.out.println("Ошибка: ответ вне допустимого диапазона!");
