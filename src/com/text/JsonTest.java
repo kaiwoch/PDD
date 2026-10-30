@@ -17,38 +17,37 @@ public class JsonTest {
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", username, password)) {
             ObjectMapper mapper = new ObjectMapper();
 
-            File file = new File("./data/tickets/Билет 1.json");
-            JsonNode jsonNode = mapper.readTree(file);
+            for (int i = 2; i <= 40; i++) {
+                String pathname = "./data/tickets/Билет " + i + ".json";
+                File file = new File(pathname);
+                JsonNode jsonNode = mapper.readTree(file);
 
-            for (JsonNode node : jsonNode) {
-                short ticketNumber = Short.parseShort(node.get("ticket_number").asText().split(" ")[1]);
-                short title = Short.parseShort(node.get("title").asText().split(" ")[1]);
-                String questionText = node.get("question").asText();
-                String imagePath = node.get("image").asText();
-                String id = node.get("id").asText();
-                String answerTip = node.get("answer_tip").asText();
+                for (JsonNode node : jsonNode) {
+                    short ticketNumber = Short.parseShort(node.get("ticket_number").asText().split(" ")[1]);
+                    short title = Short.parseShort(node.get("title").asText().split(" ")[1]);
+                    String questionText = node.get("question").asText();
+                    String imagePath = node.get("image").asText();
+                    String id = node.get("id").asText();
+                    String answerTip = node.get("answer_tip").asText();
 
-                List<String> topics = new ArrayList<>();
+                    List<String> topics = new ArrayList<>();
 
-                for (JsonNode topic : node.get("topic")) {
-                    topics.add(topic.asText());
-                }
+                    for (JsonNode topic : node.get("topic")) {
+                        topics.add(topic.asText());
+                    }
 
-                String topicsStr = String.join(", ", topics);
+                    String topicsStr = String.join(", ", topics);
 
-                for (int i = 0; i < node.get("answers").size(); i++) {
-                    System.out.println(node.get("answers").get(i).get("answer_text").asText());
-                    System.out.println(node.get("answers").get(i).get("is_correct").asBoolean());
+                    long questionId = insertQuestion(connection, questionText, topicsStr, answerTip, ticketNumber, title, imagePath, id);
+
+                    for (int j = 0; j < node.get("answers").size(); j++) {
+                        insertAnswer(connection, questionId, node.get("answers").get(j).get("answer_text").asText(), node.get("answers").get(j).get("is_correct").asBoolean());
+                    }
                 }
             }
-
-            insertQuestion(connection, "test", "test", "test", (short) 2, (short) 2, "test", "id");
-            insertAnswer(connection, 4, "test1", false);
-            insertAnswer(connection,4, "test2", true);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public static long insertQuestion(Connection connection, String questionText, String topics, String answerTip, short ticketNumber, short title, String imagePath, String sourceId) {
@@ -87,7 +86,6 @@ public class JsonTest {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
 
