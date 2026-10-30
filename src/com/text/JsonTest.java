@@ -69,5 +69,22 @@ public class JsonTest {
         }
         return questionId;
     }
+
+    public static void insertAnswer(long questionId, String answerText, boolean isCorrect) {
+        String username = "postgres";
+        String password = System.getenv("DB_PASSWORD");
+
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", username, password)) {
+            String sql = "INSERT INTO answers(question_id, answer_text, is_correct) VALUES (?, ?, ?);";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, questionId);
+                statement.setString(2, answerText);
+                statement.setBoolean(3, isCorrect);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
