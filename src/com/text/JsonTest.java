@@ -11,57 +11,64 @@ import java.util.List;
 
 public class JsonTest {
     public static void main(String[] args) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-
-        File file = new File("./data/tickets/Билет 1.json");
-        JsonNode jsonNode = mapper.readTree(file);
-
-        for (JsonNode node : jsonNode) {
-            short ticketNumber = Short.parseShort(node.get("ticket_number").asText().split(" ")[1]);
-            short title = Short.parseShort(node.get("title").asText().split(" ")[1]);
-            String questionText = node.get("question").asText();
-            String imagePath = node.get("image").asText();
-            String id = node.get("id").asText();
-            String answerTip = node.get("answer_tip").asText();
-
-            List<String> topics = new ArrayList<>();
-
-            for (JsonNode topic : node.get("topic")) {
-                topics.add(topic.asText());
-            }
-
-            String topicsStr = String.join(", ", topics);
-
-            for (int i = 0; i < node.get("answers").size(); i++) {
-                System.out.println(node.get("answers").get(i).get("answer_text").asText());
-                System.out.println(node.get("answers").get(i).get("is_correct").asBoolean());
-            }
-        }
-    }
-
-    public static long insertQuestion(String questionText, String topics, String answerTip, short ticketNumber, short title, String imagePath, String sourceId) {
         String username = "postgres";
         String password = System.getenv("DB_PASSWORD");
 
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", username, password)) {
+            ObjectMapper mapper = new ObjectMapper();
+
+            File file = new File("./data/tickets/Билет 1.json");
+            JsonNode jsonNode = mapper.readTree(file);
+
+            for (JsonNode node : jsonNode) {
+                short ticketNumber = Short.parseShort(node.get("ticket_number").asText().split(" ")[1]);
+                short title = Short.parseShort(node.get("title").asText().split(" ")[1]);
+                String questionText = node.get("question").asText();
+                String imagePath = node.get("image").asText();
+                String id = node.get("id").asText();
+                String answerTip = node.get("answer_tip").asText();
+
+                List<String> topics = new ArrayList<>();
+
+                for (JsonNode topic : node.get("topic")) {
+                    topics.add(topic.asText());
+                }
+
+                String topicsStr = String.join(", ", topics);
+
+                for (int i = 0; i < node.get("answers").size(); i++) {
+                    System.out.println(node.get("answers").get(i).get("answer_text").asText());
+                    System.out.println(node.get("answers").get(i).get("is_correct").asBoolean());
+                }
+            }
+
+            insertQuestion(connection, "test", "test", "test", (short) 2, (short) 2, "test", "id");
+            insertAnswer(connection, 4, "test1", false);
+            insertAnswer(connection,4, "test2", true);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static long insertQuestion(Connection connection, String questionText, String topics, String answerTip, short ticketNumber, short title, String imagePath, String sourceId) {
         long questionId = -1l;
 
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", username, password)) {
-            String sql = "INSERT INTO questions (question_text, category, difficulty, explanation, ticket_number, question_number, image_path, source_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)\n" +
-                    "RETURNING id;";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, questionText);
-                statement.setString(2, topics);
-                statement.setNull(3, Types.SMALLINT);
-                statement.setString(4, answerTip);
-                statement.setShort(5, ticketNumber);
-                statement.setShort(6, title);
-                statement.setString(7, imagePath);
-                statement.setString(8, sourceId);
+        String sql = "INSERT INTO questions (question_text, category, difficulty, explanation, ticket_number, question_number, image_path, source_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                "RETURNING id;";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, questionText);
+            statement.setString(2, topics);
+            statement.setNull(3, Types.SMALLINT);
+            statement.setString(4, answerTip);
+            statement.setShort(5, ticketNumber);
+            statement.setShort(6, title);
+            statement.setString(7, imagePath);
+            statement.setString(8, sourceId);
 
-                try (ResultSet result = statement.executeQuery()) {
-                    if (result.next()) {
-                        questionId = result.getLong("id");
-                    }
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    questionId = result.getLong("id");
                 }
             }
         } catch (SQLException e) {
@@ -70,21 +77,17 @@ public class JsonTest {
         return questionId;
     }
 
-    public static void insertAnswer(long questionId, String answerText, boolean isCorrect) {
-        String username = "postgres";
-        String password = System.getenv("DB_PASSWORD");
-
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", username, password)) {
-            String sql = "INSERT INTO answers(question_id, answer_text, is_correct) VALUES (?, ?, ?);";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, questionId);
-                statement.setString(2, answerText);
-                statement.setBoolean(3, isCorrect);
-                statement.executeUpdate();
-            }
+    public static void insertAnswer(Connection connection, long questionId, String answerText, boolean isCorrect) {
+        String sql = "INSERT INTO answers(question_id, answer_text, is_correct) VALUES (?, ?, ?);";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, questionId);
+            statement.setString(2, answerText);
+            statement.setBoolean(3, isCorrect);
+            statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
     }
 }
 
