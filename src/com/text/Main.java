@@ -7,7 +7,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        System.out.println(findQuestionById(1));
+        //System.out.println(findQuestionById(1));
+        System.out.println(findAllQuestions());
 
         int total = 0;
         Scanner in = new Scanner(System.in);
@@ -115,5 +116,25 @@ public class Main {
             throw new RuntimeException(e);
         }
         return res;
+    }
+
+    public static ArrayList<String> findAllQuestions() {
+        ArrayList<String> result = new ArrayList<>();
+
+        String username = "postgres";
+        String password = System.getenv("DB_PASSWORD");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", username, password)) {
+            String sql = "SELECT * FROM questions";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        result.add(resultSet.getString("question_text"));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 }
