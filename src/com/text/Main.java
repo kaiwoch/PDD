@@ -1,11 +1,14 @@
 package com.text;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+        System.out.println(findQuestionById(1));
+
         int total = 0;
         Scanner in = new Scanner(System.in);
 
@@ -86,5 +89,31 @@ public class Main {
                 System.out.println("Ошибка: вводите только целые числа.");
             }
         }
+    }
+
+    public static String findQuestionById(long id) {
+        String res = null;
+        String password = System.getenv("DB_PASSWORD");
+
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/pdd_app", "postgres", password)) {
+            String sql = "SELECT * FROM questions WHERE id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, id);
+
+                try (ResultSet result = statement.executeQuery()) {
+                    if (result.next()) {
+                        long resultId = result.getLong("id");
+                        String resultQuestionText = result.getString("question_text");
+                        short resultDifficulty = result.getShort("difficulty");
+
+                        res = resultId + ". " + resultQuestionText + " Cложность: " + resultDifficulty;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return res;
     }
 }
