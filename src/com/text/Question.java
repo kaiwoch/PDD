@@ -18,19 +18,24 @@ public class Question {
             this.answerId = answerId;
             this.answerText = answerText;
         }
+
+        public int getAnswerId() {
+            return answerId;
+        }
+
+        public String getAnswerText() {
+            return answerText;
+        }
     }
 
-    public Question(int questionId, String questionText, String[] _answers,
+    public Question(int questionId, String questionText, ArrayList<Answer> answers,
                     String description, int[] correctAnswerIds) {
         this.questionId = questionId;
         this.questionText = questionText;
         this.description = description;
         this.correctAnswerIds = Arrays.copyOf(correctAnswerIds, correctAnswerIds.length);
-        answers = new ArrayList<Answer>();
+        this.answers = new ArrayList<>(answers);
 
-        for (int i = 0; i < _answers.length; i++) {
-            answers.add(new Answer(i + 1, _answers[i]));
-        }
     }
 
     public void printQuestion() {

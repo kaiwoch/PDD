@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        //System.out.println(findQuestionById(1));
-        System.out.println(findAllQuestions());
+        System.out.println(findQuestionById(1259));
+        //System.out.println(findAllQuestions());
 
         int total = 0;
         Scanner in = new Scanner(System.in);
