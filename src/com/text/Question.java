@@ -4,37 +4,43 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Question {
-    private final int questionId;
+    private final long questionId;
     private final String questionText;
     private final ArrayList<Answer> answers;
-    private final int[] correctAnswerIds;
-    private final String description;
+    private final String category;
+    private final String explanation;
 
     public static class Answer {
-        private final int answerId;
+        private final long answerId;
         private final String answerText;
+        private final boolean isCorrect;
 
-        public Answer(int answerId, String answerText) {
+        public Answer(long answerId, String answerText, boolean isCorrect) {
             this.answerId = answerId;
             this.answerText = answerText;
+            this.isCorrect = isCorrect;
         }
 
-        public int getAnswerId() {
+        public long getAnswerId() {
             return answerId;
         }
 
         public String getAnswerText() {
             return answerText;
         }
+
+        public boolean isCorrect() {
+            return isCorrect;
+        }
     }
 
-    public Question(int questionId, String questionText, ArrayList<Answer> answers,
-                    String description, int[] correctAnswerIds) {
+    public Question(long questionId, String questionText, ArrayList<Answer> answers,
+                    String category, String explanation) {
         this.questionId = questionId;
         this.questionText = questionText;
-        this.description = description;
-        this.correctAnswerIds = Arrays.copyOf(correctAnswerIds, correctAnswerIds.length);
+        this.category = category;
         this.answers = new ArrayList<>(answers);
+        this.explanation = explanation;
 
     }
 
@@ -52,15 +58,11 @@ public class Question {
         System.out.println("===========================================");
     }
 
-    public int[] getCorrectAnswerIds() {
-        return Arrays.copyOf(correctAnswerIds, correctAnswerIds.length);
-    }
-
     public int getAnswerLength() {
         return answers.size();
     }
 
-    public Answer getAnswer(int id) {
+    public Answer getAnswer(long id) {
         for (Answer answer : answers) {
             if (answer.answerId == id) {
                 return answer;
@@ -69,19 +71,13 @@ public class Question {
         return null;
     }
 
-    public boolean isCorrectAnswer(int[] userAnswer) {
-        int[] sortedUserAnswers = Arrays.copyOf(userAnswer, userAnswer.length);
-        int[] correctAnswers = getCorrectAnswerIds();
+    public boolean isCorrectAnswer(long userAnswer) {
+        Answer answer = getAnswer(userAnswer);
 
-        Arrays.sort(sortedUserAnswers);
-        Arrays.sort(correctAnswers);
-
-        return Arrays.equals(correctAnswers, sortedUserAnswers);
+        return answer.isCorrect();
     }
 
     public void printDescription() {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
-        System.out.println("Пояснение: " + description);
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++");
+        System.out.println(explanation);
     }
 }
