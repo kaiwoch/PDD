@@ -3,6 +3,7 @@ package com.text;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -51,13 +52,12 @@ public class Main {
 
     public static long readAnswer(Question question, Scanner in) {
         while (true) {
-            System.out.print("Введите один или более ответ(ов): ");
-            Long input = in.nextLong();
-
+            System.out.print("Введите ответ: ");
             try {
-                return input;
-            } catch (NumberFormatException e) {
+                return in.nextLong();
+            } catch (InputMismatchException e) {
                 System.out.println("Неверный формат");
+                in.next(); // съедаем некорректный токен, иначе бесконечный цикл
             }
         }
     }
