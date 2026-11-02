@@ -1,7 +1,6 @@
 package com.text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Question {
     private final long questionId;
@@ -74,7 +73,12 @@ public class Question {
     public boolean isCorrectAnswer(long userAnswer) {
         Answer answer = getAnswer(userAnswer);
 
-        return answer.isCorrect();
+        if (answer == null) {
+            System.out.println("Ответ не существует");
+            return false;
+        }
+
+        return answer.isCorrect;
     }
 
     public void printDescription() {
