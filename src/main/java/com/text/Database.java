@@ -68,10 +68,11 @@ public class Database {
                     String resultQuestionText = result.getString("question_text");
                     String resultQuestionCategory = result.getString("category");
                     String resultQuestionExplanation = result.getString("explanation");
+                    String resultQuestionImagePath = result.getString("image_path");
 
                     ArrayList<Question.Answer> answers = findAnswersByQuestionId(id);
 
-                    question = new Question(resultId, resultQuestionText, answers, resultQuestionCategory, resultQuestionExplanation);
+                    question = new Question(resultId, resultQuestionText, answers, resultQuestionCategory, resultQuestionExplanation, resultQuestionImagePath);
                 }
             }
         } catch (SQLException e) {

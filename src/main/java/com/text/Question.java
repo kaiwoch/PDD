@@ -8,6 +8,7 @@ public class Question {
     private final ArrayList<Answer> answers;
     private final String category;
     private final String explanation;
+    private final String imagePath;
 
     public static class Answer {
         private final long answerId;
@@ -34,12 +35,13 @@ public class Question {
     }
 
     public Question(long questionId, String questionText, ArrayList<Answer> answers,
-                    String category, String explanation) {
+                    String category, String explanation, String imagePath) {
         this.questionId = questionId;
         this.questionText = questionText;
         this.category = category;
         this.answers = new ArrayList<>(answers);
         this.explanation = explanation;
+        this.imagePath = imagePath;
 
     }
 
@@ -91,5 +93,9 @@ public class Question {
 
     public ArrayList<Answer> getAnswers() {
         return answers;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }

@@ -6,8 +6,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class MainController {
@@ -27,9 +31,12 @@ public class MainController {
     @FXML
     private Label correctLabel;
 
-    public void startTest() {
+    @FXML
+    private ImageView questionImageView;
+
+    public void startTest() throws IOException {
         db = new Database();
-        question = db.findQuestionById(501);
+        question = db.findQuestionById(502);
 
         statusLabel.setText("Тестирование началось");
 
@@ -41,6 +48,10 @@ public class MainController {
 
             answersContainer.getChildren().clear();
             toggleGroup = new ToggleGroup();
+
+            Path path = Path.of(question.getImagePath()).toAbsolutePath();
+            Image image = new Image(path.toUri().toString());
+            questionImageView.setImage(image);
 
             for (Question.Answer answer : answers) {
                 RadioButton radioButton = new RadioButton(answer.getAnswerText());
