@@ -18,6 +18,7 @@ public class MainController {
     private ToggleGroup toggleGroup;
     private Question question;
     private Database db;
+    private long currentQuestionId = 500;
 
     @FXML
     private Label statusLabel;
@@ -36,9 +37,15 @@ public class MainController {
 
     public void startTest() throws IOException {
         db = new Database();
-        question = db.findQuestionById(502);
-
         statusLabel.setText("Тестирование началось");
+
+        loadQuestion(currentQuestionId);
+    }
+
+    public void loadQuestion(long id) {
+
+        questionImageView.setImage(null);
+        question = db.findQuestionById(id);
 
         if (question == null)
             questionLabel.setText("Вопрос не найден");
@@ -49,9 +56,11 @@ public class MainController {
             answersContainer.getChildren().clear();
             toggleGroup = new ToggleGroup();
 
-            Path path = Path.of(question.getImagePath()).toAbsolutePath();
-            Image image = new Image(path.toUri().toString());
-            questionImageView.setImage(image);
+            if (question.getImagePath() != null && !question.getImagePath().isEmpty()) {
+                Path path = Path.of(question.getImagePath()).toAbsolutePath();
+                Image image = new Image(path.toUri().toString());
+                questionImageView.setImage(image);
+            }
 
             for (Question.Answer answer : answers) {
                 RadioButton radioButton = new RadioButton(answer.getAnswerText());
@@ -72,10 +81,18 @@ public class MainController {
                     correctLabel.setText("Верно!");
                 } else
                     correctLabel.setText("Ошибка!");
+                nextQuestion();
+            } else {
+                correctLabel.setText("Выберите ответ!");
             }
         } else {
             correctLabel.setText("Тест еще не запущен!");
         }
+    }
+
+    public void nextQuestion() {
+        currentQuestionId++;
+        loadQuestion(currentQuestionId);
     }
 
     public void initialize() {
