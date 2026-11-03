@@ -1,0 +1,99 @@
+package com.text;
+
+import java.sql.*;
+import java.util.ArrayList;
+
+public class Database {
+    private final String url = "jdbc:postgresql://localhost:5432/pdd_app";
+    private final String username = "postgres";
+    private final String password = System.getenv("DB_PASSWORD");
+    private Connection connection;
+
+    public Database() {
+        try {
+            connection = connect();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Connection connect() throws SQLException {
+        this.connection = DriverManager.getConnection(url, username, password);
+        if (connection.isValid(2)) {
+            System.out.println("Успешно подключено");
+            return connection;
+        }
+        disconnect();
+        return null;
+    }
+
+    public void disconnect() throws SQLException {
+        connection.close();
+    }
+
+    public ArrayList<Question.Answer> findAnswersByQuestionId(long id) {
+        ArrayList<Question.Answer> answers = new ArrayList<>();
+
+        String sql = "select * from answers where question_id = ?;";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    long answerId = resultSet.getLong("id");
+                    String answerText = resultSet.getString("answer_text");
+                    boolean isCorrect = resultSet.getBoolean("is_correct");
+
+                    Question.Answer answer = new Question.Answer(answerId, answerText, isCorrect);
+                    answers.add(answer);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return answers;
+    }
+
+    public Question findQuestionById(long id) {
+        Question question = null;
+
+        String sql = "SELECT * FROM questions WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, id);
+
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    long resultId = result.getLong("id");
+                    String resultQuestionText = result.getString("question_text");
+                    String resultQuestionCategory = result.getString("category");
+                    String resultQuestionExplanation = result.getString("explanation");
+
+                    ArrayList<Question.Answer> answers = findAnswersByQuestionId(id);
+
+                    question = new Question(resultId, resultQuestionText, answers, resultQuestionCategory, resultQuestionExplanation);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return question;
+    }
+
+    //TODO: UPDATE RETURN VALUES
+    public ArrayList<String> findAllQuestions() {
+        ArrayList<String> result = new ArrayList<>();
+
+        String sql = "SELECT * FROM questions";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    result.add(resultSet.getString("question_text"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+}

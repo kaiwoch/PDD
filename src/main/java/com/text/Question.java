@@ -84,4 +84,12 @@ public class Question {
     public void printDescription() {
         System.out.println(explanation);
     }
+
+    public String getQuestionText() {
+        return questionText;
+    }
+
+    public ArrayList<Answer> getAnswers() {
+        return answers;
+    }
 }
