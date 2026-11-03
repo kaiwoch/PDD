@@ -1,4 +1,4 @@
-package main.com.text;
+package com.text;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
