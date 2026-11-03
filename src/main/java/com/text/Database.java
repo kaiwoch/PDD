@@ -6,7 +6,8 @@ import java.util.ArrayList;
 public class Database {
     private final String url = "jdbc:postgresql://localhost:5432/pdd_app";
     private final String username = "postgres";
-    private final String password = System.getenv("DB_PASSWORD");
+    //private final String password = System.getenv("DB_PASSWORD");
+    private  final String password = "2084";
     private Connection connection;
 
     public Database() {
