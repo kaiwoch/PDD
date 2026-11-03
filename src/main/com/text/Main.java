@@ -1,4 +1,4 @@
-package com.text;
+package main.com.text;
 
 import java.sql.*;
 import java.util.ArrayList;
