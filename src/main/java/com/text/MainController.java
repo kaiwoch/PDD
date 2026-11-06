@@ -49,7 +49,7 @@ public class MainController {
     public void startTest() throws IOException {
         totalQuestions = 0;
         correctAnswers = 0;
-        
+
         db = new Database();
         statusLabel.setText("Тестирование началось");
         startButton.setVisible(false);
@@ -131,6 +131,7 @@ public class MainController {
     }
 
     public void endTest() {
+        statusLabel.setText("Тестирование завершено");
         answersContainer.getChildren().clear();
         checkAnswerButon.setVisible(false);
         toggleGroup = null;
