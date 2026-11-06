@@ -18,6 +18,8 @@ public class MainController {
     private Question question;
     private Database db;
     private long currentQuestionId = 500;
+    private int totalQuestions;
+    private int correctAnswers;
 
     @FXML
     private Label statusLabel;
@@ -54,8 +56,30 @@ public class MainController {
         questionImageView.setImage(null);
         question = db.findQuestionById(id);
 
-        if (question == null)
-            questionLabel.setText("Вопрос не найден");
+        if (question == null) {
+            answersContainer.getChildren().clear();
+            checkAnswerButon.setVisible(false);
+            toggleGroup = null;
+
+            float result = 0;
+            if (totalQuestions > 0)
+                result = ((float) correctAnswers / totalQuestions) * 100;
+
+            if (totalQuestions == 0) {
+                questionLabel.setText("Тест завершен. Нет отвеченных вопросов.");
+                return;
+            }
+
+            if (result > 80) {
+                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 5");
+            } else if (result > 60) {
+                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 4");
+            } else if (result > 40) {
+                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 3");
+            } else {
+                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 2");
+            }
+        }
         else {
             questionLabel.setText(question.getQuestionText());
             ArrayList<Question.Answer> answers = question.getAnswers();
@@ -82,11 +106,13 @@ public class MainController {
         if (toggleGroup != null) {
             Toggle toggle = toggleGroup.getSelectedToggle();
             if (toggle != null) {
+                totalQuestions++;
                 checkAnswerButon.setVisible(false);
                 System.out.println(toggle.getUserData());
                 long userAnswer = (long)toggle.getUserData();
                 if (question.isCorrectAnswer(userAnswer)) {
                     correctLabel.setText("Верно!");
+                    correctAnswers++;
                 } else
                     correctLabel.setText("Ошибка!");
                 PauseTransition pause = new PauseTransition(Duration.seconds(2));
@@ -94,6 +120,7 @@ public class MainController {
                     nextQuestion();
                 });
                 pause.play();
+                statusLabel.setText("Отвечено: " + totalQuestions + " | Правильно: " + correctAnswers + " | Ошибок: " + (totalQuestions - correctAnswers));
             } else {
                 correctLabel.setText("Выберите ответ!");
             }
