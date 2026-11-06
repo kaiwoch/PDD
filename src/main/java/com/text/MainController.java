@@ -1,14 +1,13 @@
 package com.text;
 
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -35,15 +34,23 @@ public class MainController {
     @FXML
     private ImageView questionImageView;
 
+    @FXML
+    private Button checkAnswerButon;
+
+    @FXML
+    private Button startButton;
+
     public void startTest() throws IOException {
         db = new Database();
         statusLabel.setText("Тестирование началось");
+        startButton.setVisible(false);
 
         loadQuestion(currentQuestionId);
     }
 
     public void loadQuestion(long id) {
-
+        checkAnswerButon.setVisible(true);
+        correctLabel.setText("");
         questionImageView.setImage(null);
         question = db.findQuestionById(id);
 
@@ -75,13 +82,18 @@ public class MainController {
         if (toggleGroup != null) {
             Toggle toggle = toggleGroup.getSelectedToggle();
             if (toggle != null) {
+                checkAnswerButon.setVisible(false);
                 System.out.println(toggle.getUserData());
                 long userAnswer = (long)toggle.getUserData();
                 if (question.isCorrectAnswer(userAnswer)) {
                     correctLabel.setText("Верно!");
                 } else
                     correctLabel.setText("Ошибка!");
-                nextQuestion();
+                PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                pause.setOnFinished(event -> {
+                    nextQuestion();
+                });
+                pause.play();
             } else {
                 correctLabel.setText("Выберите ответ!");
             }
