@@ -83,8 +83,8 @@ public class Question {
         return answer.isCorrect;
     }
 
-    public void printDescription() {
-        System.out.println(explanation);
+    public String getDescription() {
+        return explanation;
     }
 
     public String getQuestionText() {

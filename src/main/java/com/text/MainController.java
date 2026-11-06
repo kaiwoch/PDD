@@ -42,6 +42,9 @@ public class MainController {
     @FXML
     private Button startButton;
 
+    @FXML
+    private Label descriptionLabel;
+
     public void startTest() throws IOException {
         db = new Database();
         statusLabel.setText("Тестирование началось");
@@ -55,6 +58,7 @@ public class MainController {
         correctLabel.setText("");
         questionImageView.setImage(null);
         question = db.findQuestionById(id);
+        descriptionLabel.setText("");
 
         if (question == null) {
             answersContainer.getChildren().clear();
@@ -113,9 +117,11 @@ public class MainController {
                 if (question.isCorrectAnswer(userAnswer)) {
                     correctLabel.setText("Верно!");
                     correctAnswers++;
-                } else
+                } else {
                     correctLabel.setText("Ошибка!");
-                PauseTransition pause = new PauseTransition(Duration.seconds(2));
+                }
+                descriptionLabel.setText(question.getDescription());
+                PauseTransition pause = new PauseTransition(Duration.seconds(3));
                 pause.setOnFinished(event -> {
                     nextQuestion();
                 });
