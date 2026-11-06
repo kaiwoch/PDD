@@ -82,15 +82,23 @@ public class Database {
         return question;
     }
 
-    //TODO: UPDATE RETURN VALUES
-    public ArrayList<String> findAllQuestions() {
-        ArrayList<String> result = new ArrayList<>();
+    public ArrayList<Question> findAllQuestions() {
+        ArrayList<Question> result = new ArrayList<>();
 
         String sql = "SELECT * FROM questions";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    result.add(resultSet.getString("question_text"));
+                    long resultId = resultSet.getLong("id");
+                    String resultQuestionText = resultSet.getString("question_text");
+                    String resultQuestionCategory = resultSet.getString("category");
+                    String resultQuestionExplanation = resultSet.getString("explanation");
+                    String resultQuestionImagePath = resultSet.getString("image_path");
+
+                    ArrayList<Question.Answer> answers = findAnswersByQuestionId(resultId);
+
+                    Question question = new Question(resultId, resultQuestionText, answers, resultQuestionCategory, resultQuestionExplanation, resultQuestionImagePath);
+                    result.add(question);
                 }
             }
         } catch (SQLException e) {

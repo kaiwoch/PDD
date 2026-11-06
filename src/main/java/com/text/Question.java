@@ -98,4 +98,8 @@ public class Question {
     public String getImagePath() {
         return imagePath;
     }
+
+    public long getQuestionId() {
+        return questionId;
+    }
 }

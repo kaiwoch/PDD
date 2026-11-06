@@ -17,9 +17,10 @@ public class MainController {
     private ToggleGroup toggleGroup;
     private Question question;
     private Database db;
-    private long currentQuestionId = 500;
     private int totalQuestions;
     private int correctAnswers;
+
+    private ArrayList<Question> questions;
 
     @FXML
     private Label statusLabel;
@@ -46,43 +47,27 @@ public class MainController {
     private Label descriptionLabel;
 
     public void startTest() throws IOException {
+        totalQuestions = 0;
+        correctAnswers = 0;
+        
         db = new Database();
         statusLabel.setText("Тестирование началось");
         startButton.setVisible(false);
 
-        loadQuestion(currentQuestionId);
+        questions = db.findAllQuestions();
+        question = questions.get((int)(Math.random() * questions.size()));
+
+        loadQuestion(question);
     }
 
-    public void loadQuestion(long id) {
+    public void loadQuestion(Question question) {
         checkAnswerButon.setVisible(true);
         correctLabel.setText("");
         questionImageView.setImage(null);
-        question = db.findQuestionById(id);
         descriptionLabel.setText("");
 
         if (question == null) {
-            answersContainer.getChildren().clear();
-            checkAnswerButon.setVisible(false);
-            toggleGroup = null;
-
-            float result = 0;
-            if (totalQuestions > 0)
-                result = ((float) correctAnswers / totalQuestions) * 100;
-
-            if (totalQuestions == 0) {
-                questionLabel.setText("Тест завершен. Нет отвеченных вопросов.");
-                return;
-            }
-
-            if (result > 80) {
-                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 5");
-            } else if (result > 60) {
-                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 4");
-            } else if (result > 40) {
-                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 3");
-            } else {
-                questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 2");
-            }
+            endTest();
         }
         else {
             questionLabel.setText(question.getQuestionText());
@@ -136,8 +121,38 @@ public class MainController {
     }
 
     public void nextQuestion() {
-        currentQuestionId++;
-        loadQuestion(currentQuestionId);
+        questions.remove(question);
+        if (questions.isEmpty()) {
+            endTest();
+            return;
+        }
+        question = questions.get((int)(Math.random() * questions.size()));
+        loadQuestion(question);
+    }
+
+    public void endTest() {
+        answersContainer.getChildren().clear();
+        checkAnswerButon.setVisible(false);
+        toggleGroup = null;
+
+        float result = 0;
+        if (totalQuestions > 0)
+            result = ((float) correctAnswers / totalQuestions) * 100;
+
+        if (totalQuestions == 0) {
+            questionLabel.setText("Тест завершен. Нет отвеченных вопросов.");
+            return;
+        }
+
+        if (result > 80) {
+            questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 5");
+        } else if (result > 60) {
+            questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 4");
+        } else if (result > 40) {
+            questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 3");
+        } else {
+            questionLabel.setText("Тестирование завершено! Процент верных ответов: " + result + ". Ваша итоговая оценка: 2");
+        }
     }
 
     public void initialize() {
